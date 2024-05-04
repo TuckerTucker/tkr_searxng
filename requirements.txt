@@ -1,0 +1,3 @@
+# simple scrape
+requests
+bs4
