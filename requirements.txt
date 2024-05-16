@@ -1,3 +1,4 @@
 # simple scrape
 requests
 bs4
+html2text
