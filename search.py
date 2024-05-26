@@ -1,7 +1,9 @@
 import requests
 import logging
 import json
-from typing import Dict, Optional, Tuple
+import os
+import re
+from typing import Dict, Optional, Tuple, List
 from tkr_simple_scrape import simple_scrape
 
 # Configure logging
@@ -41,7 +43,7 @@ def search_searx(query: str, searx_url: str = "http://localhost:8080", **kwargs)
         raise
 
 def process_search_results(search_query: str, searx_url: str, save_as: Optional[str] = None,
-                           return_results: bool = False, **query_params) -> Optional[list[Tuple[Dict, str]]]:
+                           return_results: bool = False, **query_params) -> Optional[List[Tuple[Dict, str]]]:
     """
     Process the search results by making a search request and scraping the result URLs.
 
@@ -61,6 +63,8 @@ def process_search_results(search_query: str, searx_url: str, save_as: Optional[
         results = list(zip(search_results["results"], result_texts))  # Convert to list
 
         if save_as:
+            # Ensure the directory exists
+            os.makedirs(os.path.dirname(save_as), exist_ok=True)
             save_json(results, save_as)
             logging.info(f"Search results saved as: {save_as}")
 
@@ -88,22 +92,33 @@ def save_json(data: any, filename: str) -> None:
         logging.error(f"An error occurred while saving the data: {str(e)}")
         raise
 
+def sanitize_filename(query: str, max_length: int = 50) -> str:
+    """
+    Sanitize the search query to create a valid filename and limit its length.
+
+    :param query: The search query string.
+    :param max_length: The maximum length of the filename (default: 50).
+    :return: A sanitized and truncated filename string.
+    """
+    sanitized = re.sub(r'[^a-zA-Z0-9_-]', '_', query)
+    return sanitized[:max_length]
+
 ###### Example usage
-search_query = "Python programming"
+search_query = "Why did the band jellyfish breakup after only two albums in the early nineties?"
 searx_url = "http://localhost:8080"
 
 # Additional query parameters
 query_params = {
-    "categories": "it,science",
-    "language": "en",
-    "pageno": 1,
-    "time_range": "month",
-    "safesearch": 1
+    "safesearch": 0
 }
 
 try:
     logging.info("Starting search result processing...")
-    process_search_results(search_query, searx_url, save_as="_search_results/search_results.json", return_results=True, **query_params)
+    sanitized_query = sanitize_filename(search_query)
+    save_path = f"_search_results/{sanitized_query}.json"
+    process_search_results(search_query, searx_url, save_as=save_path, return_results=True, **query_params)
     logging.info("Search result processing completed.")
 except Exception as e:
     logging.error(f"An error occurred: {str(e)}")
+
+    
