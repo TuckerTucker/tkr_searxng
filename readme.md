@@ -20,7 +20,7 @@ git clone https://github.com/tuckertucker/tkr_searxng
 2. Setup Searx
 
 ``` bash
-python setup.py
+python _setup.py
 ```
 
 ## Starting Searx

@@ -117,7 +117,7 @@ def sanitize_filename(query: str, max_length: int = 50) -> str:
     return sanitized[:max_length]
 
 if __name__ == "__main__":
-    search_query = "Why did the band jellyfish breakup after only two albums in the early nineties?"
+    search_query = "Why did the band jellyfish breakup after only two albums?"
     searx_url = "http://localhost:8080"
 
     query_params = {
