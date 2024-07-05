@@ -96,6 +96,10 @@ for submodule_path, submodule_url in submodule_info:
         clone_submodule(submodule_path, submodule_url)
 
 # Copy the settings file after cloning the submodules
-src_settings_file = Path('example.searxng.settings.yml')
+src_settings_file = Path('tkr.searxng.settings.yml')
 dest_settings_file = Path('searxng-docker/searxng/settings.yml')
 copy_settings_file(src_settings_file, dest_settings_file)
+
+# src_settings_file = Path('tkr.docker-compose.yaml')
+# dest_settings_file = Path('searxng-docker/docker-compose.yaml')
+# copy_settings_file(src_settings_file, dest_settings_file)
